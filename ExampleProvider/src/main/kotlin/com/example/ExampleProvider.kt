@@ -4,57 +4,106 @@ import com.lagradost.cloudstream3.MainAPI
 import com.lagradost.cloudstream3.SearchResponse
 import com.lagradost.cloudstream3.TvType
 import com.lagradost.cloudstream3.newMovieSearchResponse
+import com.lagradost.cloudstream3.app
+import kotlinx.serialization.Serializable
 
 class ExampleProvider : MainAPI() {
 
-    override var mainUrl = "https://example.com/"
-    override var name = "Benim Türkçe Film Test"
+    override var mainUrl = "https://graphql.anilist.co"
+    override var name = "AniList TR"
     override val supportedTypes = setOf(TvType.Movie)
     override var lang = "tr"
     override val hasMainPage = false
 
-    private data class Film(
-        val title: String,
-        val year: Int,
-        val url: String,
-        val poster: String?
+    @Serializable
+    data class AniListResponse(
+        val data: Data
     )
 
-    private val films = listOf(
-        Film(
-            "Örnek Film 1",
-            2024,
-            "https://example.com/film-1",
-            null
-        ),
-        Film(
-            "Örnek Film 2",
-            2023,
-            "https://example.com/film-2",
-            null
-        ),
-        Film(
-            "Örnek Film 3",
-            2022,
-            "https://example.com/film-3",
-            null
-        )
+    @Serializable
+    data class Data(
+        val Page: Page
+    )
+
+    @Serializable
+    data class Page(
+        val media: List<Media>
+    )
+
+    @Serializable
+    data class Media(
+        val id: Int,
+        val title: Title,
+        val seasonYear: Int? = null,
+        val coverImage: CoverImage? = null
+    )
+
+    @Serializable
+    data class Title(
+        val romaji: String? = null,
+        val english: String? = null,
+        val native: String? = null
+    )
+
+    @Serializable
+    data class CoverImage(
+        val large: String? = null
     )
 
     override suspend fun search(query: String): List<SearchResponse> {
+
         if (query.isBlank()) return emptyList()
 
-        return films
-            .filter { it.title.contains(query, ignoreCase = true) }
-            .map { film ->
-                newMovieSearchResponse(
-                    name = film.title,
-                    url = film.url,
-                    type = TvType.Movie
-                ) {
-                    year = film.year
-                    posterUrl = film.poster
+        val graphql = """
+            query SearchAnime(${"$"}search: String) {
+                Page(perPage: 20) {
+                    media(
+                        search: ${"$"}search,
+                        type: ANIME
+                    ) {
+                        id
+                        title {
+                            romaji
+                            english
+                            native
+                        }
+                        seasonYear
+                        coverImage {
+                            large
+                        }
+                    }
                 }
             }
+        """.trimIndent()
+
+        val body = mapOf(
+            "query" to graphql,
+            "variables" to mapOf(
+                "search" to query
+            )
+        )
+
+        val response = app.post(
+            "https://graphql.anilist.co",
+            json = body
+        ).parsed<AniListResponse>()
+
+        return response.data.Page.media.map { anime ->
+
+            val title =
+                anime.title.english
+                    ?: anime.title.romaji
+                    ?: anime.title.native
+                    ?: "Bilinmeyen Anime"
+
+            newMovieSearchResponse(
+                name = title,
+                url = "https://anilist.co/anime/${anime.id}",
+                type = TvType.Movie
+            ) {
+                year = anime.seasonYear
+                posterUrl = anime.coverImage?.large
+            }
+        }
     }
 }
