@@ -1,0 +1,23 @@
+[
+    {
+        "iconUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Korduene_Logo.png",
+        "fileHash": "sha256-6a1a4d2d3b45524bf1077251f4cb7ff11ae46f4503dc9e7f59c8831c6b3d6f84",
+        "apiVersion": 1,
+        "repositoryUrl": "https://github.com/68resull68-jpg/Benim-cs-eklentileri",
+        "fileSize": 9880,
+        "status": 1,
+        "language": "en",
+        "authors": [
+            "Cloudburst",
+            "Luna712"
+        ],
+        "tvTypes": [
+            "Movie"
+        ],
+        "version": 1,
+        "internalName": "ExampleProvider",
+        "description": "Lorem ipsum",
+        "url": "https://raw.githubusercontent.com/68resull68-jpg/Benim-cs-eklentileri/builds/ExampleProvider.cs3",
+        "name": "ExampleProvider"
+    }
+]
