@@ -1,0 +1,8 @@
+{
+  "name": "Benim CS Eklentilerim",
+  "description": "CloudStream eklenti deposu",
+  "manifestVersion": 1,
+  "pluginLists": [
+    "https://raw.githubusercontent.com/68resull68-jpg/Benim-cs-eklentileri/builds/plugins.json"
+  ]
+}
