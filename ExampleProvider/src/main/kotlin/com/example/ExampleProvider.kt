@@ -8,7 +8,7 @@ import com.lagradost.cloudstream3.newMovieSearchResponse
 class ExampleProvider : MainAPI() {
 
     override var mainUrl = "https://example.com/"
-    override var name = "Benim Türkçe Film"
+    override var name = "Benim Türkçe Film Test"
     override val supportedTypes = setOf(TvType.Movie)
     override var lang = "tr"
     override val hasMainPage = false
