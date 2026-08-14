@@ -14,7 +14,7 @@ class ExampleProvider : MainAPI() {
     override var name = "Benim Film Eklentilerim"
     override val supportedTypes = setOf(TvType.Movie)
     override var lang = "tr"
-    override val hasMainPage = false
+    ooverride val hasMainPage = true
 
     override suspend fun search(query: String): List<SearchResponse> {
         if (query.isBlank()) return emptyList()
