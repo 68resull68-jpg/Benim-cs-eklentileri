@@ -6,88 +6,60 @@ import com.lagradost.cloudstream3.TvType
 import com.lagradost.cloudstream3.app
 import com.lagradost.cloudstream3.newMovieSearchResponse
 import org.json.JSONObject
+import java.net.URLEncoder
 
 class ExampleProvider : MainAPI() {
 
-    override var mainUrl = "https://graphql.anilist.co"
-    override var name = "Benim Film Eklentim"
+    override var mainUrl = "https://archive.org"
+    override var name = "Benim Film Eklentilerim"
     override val supportedTypes = setOf(TvType.Movie)
     override var lang = "tr"
     override val hasMainPage = false
 
     override suspend fun search(query: String): List<SearchResponse> {
-
         if (query.isBlank()) return emptyList()
 
-        val graphql = """
-            query {
-                Page(perPage: 20) {
-                    media(search: "$query", type: ANIME) {
-                        id
-                        title {
-                            romaji
-                            english
-                            native
-                        }
-                        seasonYear
-                        coverImage {
-                            large
-                        }
-                    }
-                }
-            }
-        """.trimIndent()
+        val encoded = URLEncoder.encode(query, "UTF-8")
 
-        val body = mapOf(
-            "query" to graphql
-        )
+        val url =
+            "https://archive.org/advancedsearch.php" +
+            "?q=title%3A%28$encoded%29+AND+mediatype%3Amovies" +
+            "&fl%5B%5D=identifier" +
+            "&fl%5B%5D=title" +
+            "&fl%5B%5D=year" +
+            "&rows=20" +
+            "&output=json"
 
-        val response = app.post(
-            "https://graphql.anilist.co",
-            json = body
-        ).text
-
+        val response = app.get(url).text
         val json = JSONObject(response)
-        val media = json
-            .getJSONObject("data")
-            .getJSONObject("Page")
-            .getJSONArray("media")
+
+        val docs = json
+            .getJSONObject("response")
+            .getJSONArray("docs")
 
         val results = mutableListOf<SearchResponse>()
 
-        for (i in 0 until media.length()) {
+        for (i in 0 until docs.length()) {
+            val item = docs.getJSONObject(i)
 
-            val anime = media.getJSONObject(i)
+            val identifier = item.optString("identifier")
+            if (identifier.isBlank()) continue
 
-            val titleObject = anime.getJSONObject("title")
+            val title = item.optString("title")
+                .ifBlank { identifier }
 
-            val title =
-                titleObject.optString("english").takeIf { it.isNotBlank() }
-                    ?: titleObject.optString("romaji").takeIf { it.isNotBlank() }
-                    ?: titleObject.optString("native")
-
-            val id = anime.getInt("id")
-
-            val year =
-                if (!anime.isNull("seasonYear"))
-                    anime.getInt("seasonYear")
-                else
-                    null
-
-            val poster =
-                if (!anime.isNull("coverImage"))
-                    anime.getJSONObject("coverImage").optString("large")
-                else
-                    null
+            val year = item.optInt("year", 0)
+                .takeIf { it > 0 }
 
             results.add(
                 newMovieSearchResponse(
                     name = title,
-                    url = "https://anilist.co/anime/$id",
+                    url = "$mainUrl/details/$identifier",
                     type = TvType.Movie
                 ) {
                     this.year = year
-                    this.posterUrl = poster
+                    this.posterUrl =
+                        "$mainUrl/services/img/$identifier"
                 }
             )
         }
