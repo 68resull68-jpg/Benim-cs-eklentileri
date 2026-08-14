@@ -80,8 +80,12 @@ class ExampleProvider : MainAPI() {
         val title = json.optString("title")
             .ifBlank { identifier }
 
-        val description = json.optString("description")
-            .takeIf { it.isNotBlank() }
+        val description = if (json.has("description") && !json.isNull("description")) {
+    json.get("description").toString()
+        .takeIf { it.isNotBlank() }
+} else {
+    null
+}
 
         val year = json.optInt("year", 0)
             .takeIf { it > 0 }
