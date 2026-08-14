@@ -10,7 +10,7 @@ import org.json.JSONObject
 class ExampleProvider : MainAPI() {
 
     override var mainUrl = "https://graphql.anilist.co"
-    override var name = "AniList TR"
+    override var name = "Benim Film Eklentim"
     override val supportedTypes = setOf(TvType.Movie)
     override var lang = "tr"
     override val hasMainPage = false
