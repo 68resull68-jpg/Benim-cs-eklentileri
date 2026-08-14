@@ -1,7 +1,7 @@
 [
     {
         "iconUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Korduene_Logo.png",
-        "fileHash": "sha256-28035685e5749e82e80efaa8d2c413281e13b0a87fbdb2b7118f95a0fff12969",
+        "fileHash": "sha256-c6d5ce3cd92e76e4f6630d0f33ac121e327aecd13235fbd48d98ee48802e4b0f",
         "apiVersion": 1,
         "repositoryUrl": "https://github.com/68resull68-jpg/Benim-cs-eklentileri",
         "fileSize": 11755,
@@ -14,7 +14,7 @@
         "tvTypes": [
             "Movie"
         ],
-        "version": 1,
+        "version": 2,
         "internalName": "ExampleProvider",
         "description": "Lorem ipsum",
         "url": "https://raw.githubusercontent.com/68resull68-jpg/Benim-cs-eklentileri/builds/ExampleProvider.cs3",
