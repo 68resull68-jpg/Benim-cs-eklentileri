@@ -1,5 +1,5 @@
 plugins {
-    id("com.lagradost.cloudstream.gradle.plugin") version "1.0.0"
+    id("com.lagradost.cloudstream.gradle.plugin")
     kotlin("jvm") version "2.0.20"
 }
 
