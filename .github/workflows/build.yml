@@ -45,6 +45,15 @@ jobs:
           cp **/build/*.cs3 $GITHUB_WORKSPACE/builds
           cp build/plugins.json $GITHUB_WORKSPACE/builds/plugins.json
 
+      - name: Upload CS3 Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CloudStream-Plugins
+          path: |
+            builds/*.cs3
+            builds/plugins.json
+          if-no-files-found: error
+
       - name: Push builds
         run: |
           cd $GITHUB_WORKSPACE/builds
