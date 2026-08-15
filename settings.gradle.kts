@@ -1,3 +1,1 @@
-rootProject.name = "Cloudstream-Repo"
-include(":app")
-include(":DizipalProvider")
+rootProject.name = "Benim-cs-eklentileri"
