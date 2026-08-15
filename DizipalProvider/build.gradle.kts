@@ -1,5 +1,4 @@
 plugins {
-    id("com.lagradost.cloudstream.gradle.plugin")
     kotlin("jvm") version "2.0.20"
 }
 
