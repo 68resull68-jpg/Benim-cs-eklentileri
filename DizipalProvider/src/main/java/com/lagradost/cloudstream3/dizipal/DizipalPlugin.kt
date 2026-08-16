@@ -2,6 +2,15 @@ package com.lagradost.cloudstream3.dizipal
 
 import com.lagradost.cloudstream3.*
 import com.lagradost.cloudstream3.utils.*
+import com.lagradost.cloudstream3.utils.ExtractorLink
+import com.lagradost.cloudstream3.utils.loadExtractor
+import com.lagradost.cloudstream3.utils.newEpisode
+import com.lagradost.cloudstream3.utils.newHomePageResponse
+import com.lagradost.cloudstream3.utils.newMovieLoadResponse
+import com.lagradost.cloudstream3.utils.newMovieSearchResponse
+import com.lagradost.cloudstream3.utils.newTvSeriesLoadResponse
+import com.lagradost.cloudstream3.utils.newTvSeriesSearchResponse
+import org.jsoup.nodes.Element
 
 class DizipalProvider : MainAPI() {
     override var mainUrl = "https://dizipal818.com"
@@ -20,7 +29,7 @@ class DizipalProvider : MainAPI() {
     override suspend fun getMainPage(page: Int, request: MainPageRequest): HomePageResponse {
         val document = app.get(if(page == 1) request.data else "${request.data}page/$page/").document
         val home = document.select("div.col-md-2.col-sm-3.col-6").mapNotNull { it.toSearchResult() }
-        return HomePageResponse(request.name, home) // newHomePageResponse -> HomePageResponse
+        return newHomePageResponse(request.name, home)
     }
 
     override suspend fun search(query: String): List<SearchResponse> {
@@ -36,9 +45,9 @@ class DizipalProvider : MainAPI() {
         val isSeries = href.contains("/dizi-")
         
         return if(isSeries) {
-            TvSeriesSearchResponse(title, href, TvType.TvSeries, posterUrl = poster) // newTvSeriesSearchResponse -> TvSeriesSearchResponse
+            newTvSeriesSearchResponse(title, href, TvType.TvSeries) { this.posterUrl = poster }
         } else {
-            MovieSearchResponse(title, href, TvType.Movie, posterUrl = poster) // newMovieSearchResponse -> MovieSearchResponse
+            newMovieSearchResponse(title, href, TvType.Movie) { this.posterUrl = poster }
         }
     }
 
@@ -51,21 +60,27 @@ class DizipalProvider : MainAPI() {
         
         val episodeElements = document.select("div.episode a, ul li.episode a")
         val episodes = episodeElements.map { 
-            Episode(it.attr("href"), name = it.text().trim()) // newEpisode -> Episode
+            newEpisode(it.attr("href"), it.text().trim())
         }.reversed()
 
         return if(episodes.isEmpty()) {
-            MovieLoadResponse(title, url, TvType.Movie, url, posterUrl = poster, plot = plot) // newMovieLoadResponse -> MovieLoadResponse
+            newMovieLoadResponse(title, url, TvType.Movie, url) {
+                this.posterUrl = poster
+                this.plot = plot
+            }
         } else {
-            TvSeriesLoadResponse(title, url, TvType.TvSeries, episodes, posterUrl = poster, plot = plot) // newTvSeriesLoadResponse -> TvSeriesLoadResponse
+            newTvSeriesLoadResponse(title, url, TvType.TvSeries, episodes) {
+                this.posterUrl = poster
+                this.plot = plot
+            }
         }
     }
 
     override suspend fun loadLinks(
         data: String,
         isCasting: Boolean,
-        subtitleCallback: (SubtitleFile) -> Unit, // Callback<SubtitleFile> -> (SubtitleFile) -> Unit
-        callback: (ExtractorLink) -> Boolean // Callback<ExtractorLink> -> (ExtractorLink) -> Boolean
+        subtitleCallback: (SubtitleFile) -> Unit,
+        callback: (ExtractorLink) -> Unit // Burası Unit olacak Boolean değil
     ): Boolean {
         val document = app.get(data).document
         document.select("iframe").forEach {
