@@ -1,0 +1,58 @@
+[
+  {
+    "focusGlowEnabled": true,
+    "folders": [
+      {
+        "catalogSources": [
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.88322",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.86759",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "tmdb.discover.movie.streaming_disney_337_2.modwxdud",
+            "type": "movie"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.88323",
+            "type": "series"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.86758",
+            "type": "series"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "tmdb.discover.series.streaming_disney_337_2.modwxdud",
+            "type": "series"
+          },
+          {
+            "addonId": "aio-metadata",
+            "catalogId": "mdblist.86946",
+            "type": "series"
+          }
+        ],
+        "coverImageUrl": "https://www.nuvioapp.space/uploads/covers/ce7f8d04-5399-4456-8a0d-7deb9fcec096.png",
+        "focusGifEnabled": true,
+        "focusGifUrl": "https://image2url.com/r2/default/gifs/1775853307569-71b9019d-4620-4a71-8b92-7eb045843b1a.gif",
+        "hideTitle": false,
+        "id": "folder-5c1da038",
+        "tileShape": "LANDSCAPE",
+        "title": "Disney"
+      }
+    ],
+    "id": "collection-disney",
+    "pinToTop": true,
+    "showAllTab": true,
+    "title": "Disney",
+    "viewMode": "TABBED_GRID"
+  }
+]
